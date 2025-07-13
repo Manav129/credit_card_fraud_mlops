@@ -1,14 +1,16 @@
-# tests/test_api.py
-
 from fastapi.testclient import TestClient
-from app.main import app
+from src.app import app
 
 client = TestClient(app)
+
 
 def test_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to the Credit Card Fraud Detection API"}
+    assert response.json() == {
+        "message": "Welcome to the Credit Card Fraud Detection API"
+    }
+
 
 def test_predict_valid_input():
     payload = {
@@ -18,6 +20,7 @@ def test_predict_valid_input():
     response = client.post("/predict", json=payload)
     assert response.status_code == 200
     assert "prediction" in response.json()
+
 
 def test_predict_invalid_input():
     payload = {
