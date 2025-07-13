@@ -28,16 +28,13 @@ jobs:
           pip install flake8
 
       - name: Run lint checks (flake8)
-        run: |
-          flake8 src --ignore=E501
+        run: flake8 src --ignore=E501
 
-      - name: Train model (required before testing)
-        run: |
-          python src/train.py
+      - name: Train model and generate .pkl
+        run: python src/train.py
 
       - name: Run unit tests
-        run: |
-          pytest tests/
+        run: pytest tests/
 
   dockerize-and-deploy:
     needs: build-and-test
@@ -54,5 +51,4 @@ jobs:
       - name: Build Docker image
         run: docker build -t fraud-detection-app -f docker/Dockerfile .
 
-      # Optional: Push to Docker Hub or deploy to cloud
-      # Add deployment steps here
+      # Add Docker Hub or cloud deployment steps if needed
