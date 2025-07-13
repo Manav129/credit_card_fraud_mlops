@@ -3,8 +3,10 @@ import mlflow
 from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 from src.data_loader import load_data, preprocess_data
 from src.config import MODEL_PATH, CONF_MATRIX_PATH
+
 
 def evaluate():
     df = load_data()
@@ -26,6 +28,7 @@ def evaluate():
 
     with mlflow.start_run():
         mlflow.log_artifact(CONF_MATRIX_PATH)
+
 
 if __name__ == "__main__":
     evaluate()

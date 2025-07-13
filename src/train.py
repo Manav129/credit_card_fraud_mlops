@@ -1,14 +1,17 @@
 import mlflow
 import mlflow.sklearn
-import joblib
-import os
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
+
 from src.data_loader import load_data, preprocess_data
 from src.utils import save_model
 from src.config import MODEL_PATH
 
+
+mlflow.set_tracking_uri("file:///" + MODEL_PATH.replace("\\", "/"))
 mlflow.set_experiment("credit-card-fraud-detection")
+
 
 def train():
     df = load_data()
@@ -28,6 +31,7 @@ def train():
 
         save_model(clf, MODEL_PATH)
         mlflow.sklearn.log_model(clf, "model")
+
 
 if __name__ == "__main__":
     train()

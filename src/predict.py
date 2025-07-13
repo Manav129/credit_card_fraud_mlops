@@ -1,12 +1,13 @@
-# src/predict.py
-
 import joblib
 import numpy as np
 
+
 MODEL_PATH = "models/logistic_model.pkl"
+
 
 def load_model(path: str = MODEL_PATH):
     return joblib.load(path)
+
 
 def make_prediction(model, input_data: list):
     """

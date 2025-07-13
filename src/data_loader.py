@@ -2,9 +2,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+
 def load_data(path: str = "data/raw/creditcard.csv"):
     df = pd.read_csv(path)
     return df
+
 
 def preprocess_data(df: pd.DataFrame):
     X = df.drop("Class", axis=1)
