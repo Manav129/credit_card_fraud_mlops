@@ -18,9 +18,9 @@ env/
 logs/
 
 # Data files
-data/raw/
-*.csv
-*.zip
+#data/raw/
+#*.csv
+#*.zip
 
 # ML artifacts
 mlruns/
