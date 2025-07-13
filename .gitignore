@@ -1,0 +1,58 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs and temporary files
+*.log
+logs/
+
+# Data files
+data/raw/
+*.csv
+*.zip
+
+# ML artifacts
+mlruns/
+models/
+*.pkl
+*.joblib
+
+# FastAPI/Uvicorn generated
+*.db
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python packaging
+*.egg-info/
+build/
+dist/
+
+# Environment & secrets
+.env
+*.env
+
+# Test cache
+.pytest_cache/
+coverage.xml
+htmlcov/
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# Docker
+*.tar
