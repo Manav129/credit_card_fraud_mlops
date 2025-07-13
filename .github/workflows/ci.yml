@@ -1,52 +1,56 @@
-# .github/workflows/ci.yml
-
 name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build-and-test:
+  build-and-train:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install flake8
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run lint checks (flake8)
-        run: flake8 src --ignore=E501
+    - name: 🧹 Ensure necessary directories exist
+      run: |
+        mkdir -p data/raw
+        mkdir -p models
 
-      - name: Train model and generate .pkl
-        run: PYTHONPATH=. python src/train.py
+    - name: 🔐 Set up Kaggle API credentials
+      run: |
+        mkdir -p ~/.kaggle
+        echo "${{ secrets.KAGGLE_JSON }}" > ~/.kaggle/kaggle.json
+        chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Run unit tests
-        run: PYTHONPATH=. pytest tests/
+    - name: 📥 Download Dataset from Kaggle
+      run: |
+        kaggle datasets download -d mlg-ulb/creditcardfraud -p data/raw/
+        ls data/raw/
+        unzip -o data/raw/creditcardfraud.zip -d data/raw/
 
-  dockerize-and-deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    - name: 🚀 Run training script
+      run: python src/train.py
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: ✅ Run evaluation script
+      run: python src/evaluate.py
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+    - name: ✅ Lint code with flake8
+      run: |
+        flake8 src tests
 
-      - name: Build Docker image
-        run: docker build -t fraud-detection-app -f docker/Dockerfile .
+    - name: 🧪 Run unit tests with pytest
+      run: |
+        pytest
