@@ -31,10 +31,10 @@ jobs:
         run: flake8 src --ignore=E501
 
       - name: Train model and generate .pkl
-        run: python src/train.py
+        run: PYTHONPATH=. python src/train.py
 
       - name: Run unit tests
-        run: pytest tests/
+        run: PYTHONPATH=. pytest tests/
 
   dockerize-and-deploy:
     needs: build-and-test
@@ -50,5 +50,3 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t fraud-detection-app -f docker/Dockerfile .
-
-      # Add Docker Hub or cloud deployment steps if needed
