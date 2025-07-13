@@ -23,6 +23,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install kaggle             # 👈 ADD THIS LINE
 
     - name: 🔐 Set up Kaggle API credentials
       run: |
@@ -35,7 +36,7 @@ jobs:
     - name: 📥 Download Dataset from Kaggle
       run: |
         kaggle datasets download -d mlg-ulb/creditcardfraud -p data/raw/
-        unzip -o data/raw/creditcardfraud.zip -d data/raw/
+        unzip data/raw/creditcardfraud.zip -d data/raw/
 
     - name: 🚀 Run training
       run: python src/train.py
