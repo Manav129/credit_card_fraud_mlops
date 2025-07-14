@@ -42,20 +42,16 @@ jobs:
 
     - name: 🚀 Run training
       run: |
-        export PYTHONPATH=.
-        python src/train.py
+        python -m src.train
 
     - name: ✅ Run evaluation
       run: |
-        export PYTHONPATH=.
-        python src/evaluate.py
+        python -m src.evaluate
 
     - name: ✅ Lint code with flake8
       run: |
-        export PYTHONPATH=.
         flake8 src tests
 
     - name: 🧪 Run unit tests
       run: |
-        export PYTHONPATH=.
         pytest
