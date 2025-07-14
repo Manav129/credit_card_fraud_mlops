@@ -6,6 +6,7 @@ import joblib
 def save_model(model, path):
     """
     Save the model to the given path.
+
     If a directory exists at the path, remove it first to avoid conflicts.
     """
     if os.path.isdir(path):
@@ -24,6 +25,7 @@ def save_model(model, path):
 def load_model(path):
     """
     Load the model from the given path.
+
     Raises an error if the file does not exist.
     """
     if not os.path.isfile(path):
