@@ -1,12 +1,11 @@
 import os
-import shutil
 import joblib
 
 
 def save_model(model, path):
     """
     Save the model to the given path.
-    If a directory exists at the path, remove it first to avoid conflicts.
+    Ensure the parent directory exists.
     """
     if os.path.isdir(path):
         print(
