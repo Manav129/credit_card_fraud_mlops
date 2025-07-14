@@ -23,7 +23,7 @@ data/raw/creditcard.csv
 
 # ML artifacts
 mlruns/
-models/
+# models/
 *.pkl
 *.joblib
 
