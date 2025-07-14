@@ -1,7 +1,9 @@
 import os
 
-# Base directory of the repo
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# Dynamically detect BASE_DIR from GitHub Actions or local
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+while not os.path.exists(os.path.join(BASE_DIR, ".git")) and BASE_DIR != "/":
+    BASE_DIR = os.path.dirname(BASE_DIR)
 
 # Data paths
 DATA_DIR = os.path.join(BASE_DIR, "data", "raw")
