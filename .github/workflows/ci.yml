@@ -41,17 +41,13 @@ jobs:
         unzip -o data/raw/creditcardfraud.zip -d data/raw/
 
     - name: 🚀 Run training
-      run: |
-        python -m src.train
+      run: python -m src.train
 
     - name: ✅ Run evaluation
-      run: |
-        python -m src.evaluate
+      run: python -m src.evaluate
 
     - name: ✅ Lint code with flake8
-      run: |
-        flake8 src tests
+      run: flake8 src tests
 
     - name: 🧪 Run unit tests
-      run: |
-        pytest
+      run: pytest
