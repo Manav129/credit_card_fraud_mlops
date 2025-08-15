@@ -7,54 +7,62 @@ import traceback
 from src.config import MODEL_PATH
 from src.utils import load_model
 
-app = FastAPI()
+# Initialize FastAPI app
+app = FastAPI(
+    title="💳 Credit Card Fraud Detection API",
+    description="API for predicting credit card fraud using ML model",
+    version="1.0.0",
+)
 
-# Enable CORS (needed for frontend-backend connection)
+# Enable CORS for your specific frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Keep * for first deploy; restrict later
+    allow_origins=["https://credit-card-fraud-frontend-seven.vercel.app"],  # Replace with your live Vercel frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Load the trained model
-model = load_model(MODEL_PATH)
+try:
+    model = load_model(MODEL_PATH)
+    print(f"✅ Model loaded successfully from {MODEL_PATH}")
+except Exception as e:
+    print(f"🔥 Failed to load model: {e}")
+    model = None
 
-
-# Define the input data format
+# Input data format
 class InputData(BaseModel):
-    features: list[float]
+    features: list[float]  # Expecting 30 numerical features
 
-
+# Root endpoint
 @app.get("/")
 def home():
-    """Root endpoint for testing."""
     return {"message": "Welcome to the Credit Card Fraud Detection API"}
 
-
+# Prediction endpoint
 @app.post("/predict")
 def predict(data: InputData):
-    """Prediction endpoint."""
+    if model is None:
+        raise HTTPException(status_code=500, detail="Model not loaded. Prediction unavailable.")
+
     try:
         features = np.array(data.features).reshape(1, -1)
 
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail="Input must contain exactly 30 features."
+                detail=f"Input must contain exactly 30 features. Got {features.shape[1]}."
             )
 
+        # Make prediction
         prediction = model.predict(features)
-        return {"prediction": int(prediction[0])}
 
-    except HTTPException:
-        raise
+        # Optional: probability if model supports predict_proba
+        prob = model.predict_proba(features)[0].tolist() if hasattr(model, "predict_proba") else None
+
+        return {"prediction": int(prediction[0]), "probability": prob}
 
     except Exception as e:
-        print("🔥 Error during prediction:")
         traceback.print_exc()
-        raise HTTPException(
-            status_code=500,
-            detail=f"Prediction failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
