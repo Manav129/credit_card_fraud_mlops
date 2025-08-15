@@ -1,4 +1,4 @@
-name: CD - Deploy Only
+name: CD - Deploy to Render
 
 on:
   push:
@@ -10,21 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: ⬇️ Checkout Code
         uses: actions/checkout@v3
 
-      - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: 🔐 Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/credit-fraud-api .
+      - name: 🐳 Build Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/credit-fraud-api .
 
-      - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/credit-fraud-api
+      - name: 📤 Push Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/credit-fraud-api
 
-      - name: Deploy to Railway
+      - name: 🚀 Deploy to Render
         run: |
-          curl -sSL https://railway.app/install.sh | sh
-          railway up --yes
+          curl -fsSL https://render.com/deploy.sh | bash
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
