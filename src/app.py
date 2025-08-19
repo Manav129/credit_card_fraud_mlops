@@ -58,7 +58,7 @@ def predict(data: InputData):
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail=f"Invalid input size. Expected 30, got {features.shape[1]}"
+                detail=f"Invalid input size. Got {features.shape[1]}"
             )
 
         prediction = model.predict(features)
