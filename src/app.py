@@ -59,11 +59,15 @@ def predict(data: InputData):
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail=f"Invalid input length. Expected 30, got {features.shape[1]}"
+                detail=f"Invalid input size. Expected 30, {features.shape[1]}"
             )
 
         prediction = model.predict(features)
-        prob = model.predict_proba(features)[0].tolist() if hasattr(model, "predict_proba") else None
+        if hasattr(model, "predict_proba"):
+            prob = model.predict_proba(features)[0].tolist()
+        else:
+            prob = None
+
 
         return {"prediction": int(prediction[0]), "probability": prob}
 
