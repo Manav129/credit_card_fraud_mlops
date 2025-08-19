@@ -67,8 +67,7 @@ def predict(data: InputData):
             prob = model.predict_proba(features)[0].tolist()
         else:
             prob = None
-
-
+            
         return {"prediction": int(prediction[0]), "probability": prob}
 
     except HTTPException:
