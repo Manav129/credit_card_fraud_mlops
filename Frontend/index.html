@@ -132,10 +132,7 @@ async function submitData() {
     output.innerHTML = "❌ Please enter 30 values!";
     return;
   }
-
-  const values = Array.from(inputs)
-    .map(input => parseFloat(input.value))
-    .filter(v => !isNaN(v));
+ const values = inputText.split(",").map(v => parseFloat(v.trim()));
   if (values.length !== 30 || values.some(v => isNaN(v))) {
     output.className = "result error";
     output.innerHTML = "❌ Invalid input. Enter exactly 30 numbers.";
