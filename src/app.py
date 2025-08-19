@@ -17,7 +17,7 @@ app = FastAPI(
 # Enable CORS for your specific frontend
 app.add_middleware(
     CORSMiddleware,
-   allow_origins=["*"],  # Replace with your live Vercel frontend URL
+    allow_origins=["*"],  # Replace with your live Vercel frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,20 +31,23 @@ except Exception as e:
     print(f"🔥 Failed to load model: {e}")
     model = None
 
+
 # Input data format
 class InputData(BaseModel):
     features: list[float]  # Expecting 30 numerical features
+
 
 # Root endpoint
 @app.get("/")
 def home():
     return {"message": "Welcome to the Credit Card Fraud Detection API"}
 
+
 # Prediction endpoint
 @app.post("/predict")
 def predict(data: InputData):
     if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded. Prediction unavailable.")
+        raise HTTPException(status_code=500, detail="Model not loaded. Unavailable.")
 
     try:
         features = np.array(data.features).reshape(1, -1)
@@ -52,7 +55,7 @@ def predict(data: InputData):
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail=f"Input must contain exactly 30 features. Got {features.shape[1]}."
+                detail=f". Got {features.shape[1]}."
             )
 
         # Make prediction
@@ -65,4 +68,4 @@ def predict(data: InputData):
 
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed: {str(e)}")
