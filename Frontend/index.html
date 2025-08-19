@@ -1,119 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Credit Card Fraud Detection</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f2f2f2;
-      text-align: center;
-    }
-
-    h1 {
-      background-color: #34495e;
-      color: white;
-      padding: 20px 0;
-    }
-
-    textarea {
-      width: 80%;
-      height: 120px;
-      margin: 20px auto;
-      padding: 10px;
-      font-size: 16px;
-      resize: none;
-    }
-
-    button {
-      padding: 12px 30px;
-      font-size: 16px;
-      background-color: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #2ecc71;
-    }
-
-    .result {
-      font-size: 20px;
-      margin-top: 20px;
-    }
-
-    .error {
-      color: red;
-    }
-
-    .success {
-      color: green;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>💳 Credit Card Fraud Detection</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  color: #333;
+}
+header {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
+}
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+header p {
+  font-size: 1.1rem;
+}
+.container {
+  max-width: 900px;
+  margin: -40px auto 40px auto;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px 40px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+.instructions {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
+}
+textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 2px solid #2980b9;
+  resize: none;
+  outline: none;
+  transition: border 0.3s;
+}
+textarea:focus {
+  border-color: #27ae60;
+}
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 15px 40px;
+  font-size: 18px;
+  background: #2980b9;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+button:hover {
+  background: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.result {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  padding: 15px;
+  border-radius: 10px;
+  min-height: 50px;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+.error {
+  background-color: #fdecea;
+  color: #e74c3c;
+  border: 1px solid #f5c6cb;
+}
+.success {
+  background-color: #eafaf1;
+  color: #27ae60;
+  border: 1px solid #a8e6a1;
+}
+.loading {
+  font-size: 1.1rem;
+  color: #2980b9;
+}
+@media (max-width: 600px) {
+  .container {
+    margin: 20px;
+    padding: 20px;
+  }
+  button {
+    width: 100%;
+  }
+}
+</style>
 </head>
 <body>
 
-  <h1>💳 Credit Card Fraud Detection App</h1>
+<header>
+  <h1>💳 Credit Card Fraud Detection</h1>
+  <p>Enter 30 numerical values (V1–V28, Time, Amount) to predict fraud.</p>
+</header>
 
-  <p><strong>Enter 30 comma-separated values (V1–V28, Time, Amount):</strong></p>
-
-  <textarea id="features" placeholder="e.g., -1.23, 0.56, ..., 134.56"></textarea><br>
+<div class="container">
+  <div class="instructions">
+    <p>Enter 30 values as comma-separated numbers. Example: <em>-1.23,0.56,...,134.56</em></p>
+  </div>
+  <textarea id="features" placeholder="Enter 30 values separated by commas..."></textarea>
   <button onclick="submitData()">🚀 Predict</button>
-
   <div class="result" id="output"></div>
+</div>
 
-  <script>
-    async function submitData() {
-      const output = document.getElementById("output");
-      output.innerHTML = "";
-      const inputText = document.getElementById("features").value.trim();
+<script>
+async function submitData() {
+  const output = document.getElementById("output");
+  output.className = "result loading";
+  output.innerHTML = "⏳ Predicting...";
 
-      if (!inputText) {
-        output.innerHTML = <p class="error">❌ Please enter 30 values!</p>;
-        return;
-      }
+  const inputText = document.getElementById("features").value.trim();
+  if (!inputText) {
+    output.className = "result error";
+    output.innerHTML = "❌ Please enter 30 values!";
+    return;
+  }
 
-      const values = inputText.split(",").map(v => parseFloat(v.trim()));
-      if (values.length !== 30 || values.some(v => isNaN(v))) {
-        output.innerHTML = <p class="error">❌ Invalid input. Please enter exactly 30 **numbers**, separated by commas.</p>;
-        return;
-      }
+  const values = inputText.split(",").map(v => parseFloat(v.trim()));
+  if (values.length !== 30 || values.some(v => isNaN(v))) {
+    output.className = "result error";
+    output.innerHTML = "❌ Invalid input. Enter exactly 30 numbers.";
+    return;
+  }
 
-      const keys = [
-        "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10",
-        "V11", "V12", "V13", "V14", "V15", "V16", "V17", "V18", "V19", "V20",
-        "V21", "V22", "V23", "V24", "V25", "V26", "V27", "V28", "Time", "Amount"
-      ];
+  const keys = Array.from({length:28}, (_,i)=>`V${i+1}`).concat(["Time","Amount"]);
+  const payload = Object.fromEntries(keys.map((k,i)=>[k,values[i]]));
 
-      const payload = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
-
-      try {
-        const res = await fetch("https://credit-card-fraud-mlops.onrender.com/predict", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload)
-});
-
-        if (!res.ok) {
-          throw new Error(Server returned status ${res.status});
-        }
-
-        const data = await res.json();
-
-        if (data.prediction === 1) {
-          output.innerHTML = <p class="success">⚠ Prediction: <strong>FRAUD</strong></p>;
-        } else {
-          output.innerHTML = <p class="success">✅ Prediction: <strong>NOT FRAUD</strong></p>;
-        }
-      } catch (err) {
-        output.innerHTML = <p class="error">❌ Error: ${err.message}</p>;
-      }
-    }
-  </script>
+  try {
+    const res = await fetch("https://credit-card-fraud-mlops-2.onrender.com/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    output.className = "result " + (data.prediction === 1 ? "error" : "success");
+    output.innerHTML = data.prediction === 1 ? "⚠ Prediction: FRAUD 🚨" : "✅ Prediction: NOT FRAUD 🎉";
+  } catch(err) {
+    output.className = "result error";
+    output.innerHTML = `❌ Error: ${err.message}`;
+  }
+}
+</script>
 
 </body>
 </html>

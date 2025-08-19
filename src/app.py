@@ -17,7 +17,7 @@ app = FastAPI(
 # Enable CORS for your specific frontend
 app.add_middleware(
     CORSMiddleware,
-   allow_origins=["*"],  # Replace with your live Vercel frontend URL
+   allow_origins=["https://credit-card-fraud-frontend-seven.vercel.app"],  # Replace with your live Vercel frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
