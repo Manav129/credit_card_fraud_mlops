@@ -59,20 +59,17 @@ def predict(data: InputData):
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail=f". Got {features.shape[1]}."
+                detail=f"Invalid input length. Expected 30, got {features.shape[1]}"
             )
 
-        # Make prediction
         prediction = model.predict(features)
-
-        # Optional: probability if model supports predict_proba
-        if hasattr(model, "predict_proba"):
-            prob = model.predict_proba(features)[0].tolist()
-        else:
-            prob = None
+        prob = model.predict_proba(features)[0].tolist() if hasattr(model, "predict_proba") else None
 
         return {"prediction": int(prediction[0]), "probability": prob}
 
+    except HTTPException:
+        # ✅ Let FastAPI handle expected errors
+        raise
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed: {str(e)}")
