@@ -7,12 +7,14 @@ import traceback
 from src.config import MODEL_PATH
 from src.utils import load_model
 
+
 # Initialize FastAPI app
 app = FastAPI(
     title="💳 Credit Card Fraud Detection API",
     description="API for predicting credit card fraud using ML model",
     version="1.0.0",
 )
+
 
 # Enable CORS for your specific frontend
 app.add_middleware(
@@ -26,6 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Load the trained model
 try:
     model = load_model(MODEL_PATH)
@@ -34,20 +37,26 @@ except Exception as e:
     print(f"🔥 Failed to load model: {e}")
     model = None
 
+
 # Input data format
 class InputData(BaseModel):
     features: list[float]  # Expecting 30 numerical features
+
 
 # Root endpoint
 @app.get("/")
 def home():
     return {"message": "Welcome to the Credit Card Fraud Detection API"}
 
+
 # Prediction endpoint
 @app.post("/predict")
 def predict(data: InputData):
     if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded. Prediction unavailable.")
+        raise HTTPException(
+            status_code=500,
+            detail="Model not loaded. Prediction unavailable.",
+        )
 
     try:
         features = np.array(data.features).reshape(1, -1)
@@ -55,17 +64,30 @@ def predict(data: InputData):
         if features.shape[1] != 30:
             raise HTTPException(
                 status_code=400,
-                detail=f"Input must contain exactly 30 features. Got {features.shape[1]}."
+                detail=(
+                    f"Input must contain exactly 30 features. "
+                    f"Got {features.shape[1]}."
+                ),
             )
 
         # Make prediction
         prediction = model.predict(features)
 
         # Optional: probability if model supports predict_proba
-        prob = model.predict_proba(features)[0].tolist() if hasattr(model, "predict_proba") else None
+        prob = (
+            model.predict_proba(features)[0].tolist()
+            if hasattr(model, "predict_proba")
+            else None
+        )
 
-        return {"prediction": int(prediction[0]), "probability": prob}
+        return {
+            "prediction": int(prediction[0]),
+            "probability": prob,
+        }
 
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Prediction failed: {str(e)}",
+        )
