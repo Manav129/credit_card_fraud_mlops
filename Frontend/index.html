@@ -140,8 +140,7 @@ async function submitData() {
     return;
   }
 
-  const keys = Array.from({length:28}, (_,i)=>`V${i+1}`).concat(["Time","Amount"]);
-  const payload = Object.fromEntries(keys.map((k,i)=>[k,values[i]]));
+  const payload = { features: values };
 
   try {
     const res = await fetch("https://credit-card-fraud-mlops-2.onrender.com/predict", {
