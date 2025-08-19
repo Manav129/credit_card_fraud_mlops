@@ -14,14 +14,18 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
 # Enable CORS for your specific frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your live Vercel frontend URL
+    allow_origins=[
+        "https://credit-card-fraud-frontend-seven.vercel.app"
+    ],  # ✅ Your Vercel frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Load the trained model
 try:
@@ -47,7 +51,7 @@ def home():
 @app.post("/predict")
 def predict(data: InputData):
     if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded. Unavailable.")
+        raise HTTPException(status_code=500, detail="Model not loaded.")
 
     try:
         features = np.array(data.features).reshape(1, -1)
@@ -62,7 +66,10 @@ def predict(data: InputData):
         prediction = model.predict(features)
 
         # Optional: probability if model supports predict_proba
-        prob = model.predict_proba(features)[0].tolist() if hasattr(model, "predict_proba") else None
+        if hasattr(model, "predict_proba"):
+            prob = model.predict_proba(features)[0].tolist()
+        else:
+            prob = None
 
         return {"prediction": int(prediction[0]), "probability": prob}
 
